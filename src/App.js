@@ -1,6 +1,8 @@
+import Product from "./components/Product";
+import { useState } from "react";
 import "./App.css";
 
-const data = [
+const initialData = [
   {
     id: 1,
     name: "Noodles",
@@ -14,7 +16,7 @@ const data = [
     quantity: 1,
   },
   {
-    id: 2,
+    id: 3,
     name: "Chips",
     price: 10,
     quantity: 1,
@@ -22,15 +24,35 @@ const data = [
 ];
 
 function App() {
+  const [data, setData] = useState(initialData);
+
+  const updateQuantity = (id, newQuantity) => {
+    setData((prevData) =>
+      prevData.map((item) =>
+        item.id === id ? { ...item, quantity: newQuantity } : item
+      )
+    );
+  };
+
+  const total = data.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
   return (
     <div className="App" data-testid="app">
       <div data-testid="cart-products">
-        {/*  map through the  data and pass props to the Product component */}
+        {data.map((item) => (
+          <Product
+            key={item.id}
+            id={item.id}
+            name={item.name}
+            price={item.price}
+            quantity={item.quantity}
+            updateQuantity={updateQuantity}
+          />
+        ))}
       </div>
 
       <h1 id="total-cart" data-testid="total-cart">
-        {/* Show the total of the Cart(a actual Price of a Product = price * quantity) */}
-        {/* The total price should be in this syntax `Total :123` */}
+        Total: {total}
       </h1>
     </div>
   );
